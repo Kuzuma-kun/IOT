@@ -1,0 +1,4 @@
+command_parser.c:19:6:command_parser	16	static
+command_parser.c:45:9:is_command_done	4	static
+command_parser.c:49:6:reset_command	4	static
+command_parser.c:53:7:get_command	4	static
