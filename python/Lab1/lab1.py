@@ -69,8 +69,6 @@ counter = 0
 s = Service(ChromeDriverManager().install())
 driver = webdriver.Chrome(service=s)
 driver.get('https://www.google.com')
-options = Options()
-options.add_argument("--use-fake-ui-for-media-stream")
 # dong code duoi day dung de tao them 1 p co id = "location" chen vao trang web
 # thuc te thi cac ham o day deu la ham async, nen ta khong the tra ve 1 gia tri nao ca
 # kieu, khi goi ham async, thay vi cho async lam xong thi code di toi dong tiep theo luon
