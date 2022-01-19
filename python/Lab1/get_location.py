@@ -1,6 +1,6 @@
 import os
-lat, lot = os.popen('curl ipinfo.io/loc').read().split(',')
 
+lat, lot = os.popen('curl ipinfo.io/loc').read().split(',')
 
 # ------------------Lay location dua vao IP (thuong dan toi nha cung cap dich vu ISP)---------------------------
 import geocoder
@@ -30,7 +30,7 @@ def getLoc():
     return asyncio.run(getCoords())
 
 
-#----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
 
 # ------------------------------Su dung google chrome de lay location -------------------------------------
 from selenium import webdriver
@@ -73,17 +73,18 @@ string = '''
         document.body.appendChild(para);
     });'''.replace('\n', '').replace('\t', '')
 
-
 # repeat this code
-driver.execute_script(string)
-time.sleep(2)
-res = driver.find_element(By.ID, "location")
-loc = res.text
-locDict = json.loads(loc)
-print("latitude: %f, longitude: %f" % (locDict["latitude"], locDict["longitude"]))
-#-------------------------------------------------------------------------------------------------
+try:
+    driver.execute_script(string)
+    time.sleep(2)
+    res = driver.find_element(By.ID, "location")
+    loc = res.text
+    locDict = json.loads(loc)
+    print("latitude: %f, longitude: %f" % (locDict["latitude"], locDict["longitude"]))
+except:
+    print("unable to get latitude and longitude")
 
-
+# -------------------------------------------------------------------------------------------------
 
 
 # code driver co the tra ve gia tri neu ham duoc goi return cai gi do.
@@ -95,10 +96,10 @@ string = '''
 driver.execute_script("return {foo: 'bar'}")
 driver.execute_script(string)
 
-
 # ---------------------lay location su dung geopy va Nominatim-----------------------
 from geopy.geocoders import Nominatim
 import geocoder
+
 longitude = 106.7
 latitude = 10.6
 
@@ -126,3 +127,30 @@ longitude = location.longitude
 latitude = location.latitude
 
 # ------------------------------------------------------------------------------------
+
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+
+
+def getLocation():
+    options = Options()
+    options.add_argument("--use-fake-ui-for-media-stream")
+    options.add_experimental_option('excludeSwitches', ['enable-logging'])
+    options.add_experimental_option('useAutomationExtension', False)
+    timeout = 20
+    s = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=s, options=options)
+    driver.get("https://mycurrentlocation.net/")
+    wait = WebDriverWait(driver, timeout)
+    time.sleep(3)
+    longitude = driver.find_element(By.XPATH, '//*[@id="longitude"]').text
+    latitude = driver.find_element(By.XPATH, '//*[@id="latitude"]').text
+    driver.quit()
+    return (latitude, longitude)
+
+
+print(getLocation())

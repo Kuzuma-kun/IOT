@@ -66,6 +66,8 @@ counter = 0
 
 
 # ----------------------------------dia ly------------------------------------------
+latitude = 10.8231
+longitude = 106.6297
 s = Service(ChromeDriverManager().install())
 driver = webdriver.Chrome(service=s)
 driver.get('https://www.google.com')
@@ -97,20 +99,7 @@ string = '''
     });'''.replace('\n', '').replace('\t', '')
 
 # repeat this code
-driver.execute_script(string)
-time.sleep(2)
-res = driver.find_element(By.ID, "location")
-loc = res.text
-locDict = json.loads(loc)
-longitude = locDict["longitude"]
-latitude = locDict["latitude"]
-print("latitude: %f, longitude: %f" % (locDict["latitude"], locDict["longitude"]))
-
-
-# ------------------------------------main code--------------------------------------------------------
-while True:
-    collect_data = {'temperature': temp, 'humidity': humi, 'light': light_intensity,
-                    'longitude': longitude, 'latitude': latitude}  # thang nay la dict
+try:
     driver.execute_script(string)
     time.sleep(2)
     res = driver.find_element(By.ID, "location")
@@ -119,6 +108,27 @@ while True:
     longitude = locDict["longitude"]
     latitude = locDict["latitude"]
     print("latitude: %f, longitude: %f" % (locDict["latitude"], locDict["longitude"]))
+except:
+    print("Unable to get latitude and longitude")
+
+
+# ------------------------------------main code--------------------------------------------------------
+while True:
+    collect_data = {'temperature': temp, 'humidity': humi, 'light': light_intensity,
+                    'longitude': longitude, 'latitude': latitude}  # thang nay la dict
+    # repeat code
+    try:
+        driver.execute_script(string)
+        time.sleep(2)
+        res = driver.find_element(By.ID, "location")
+        loc = res.text
+        locDict = json.loads(loc)
+        longitude = locDict["longitude"]
+        latitude = locDict["latitude"]
+        print("latitude: %f, longitude: %f" % (locDict["latitude"], locDict["longitude"]))
+    except:
+        print("Unable to get latitude and longitude")
+    # ---------------location--------------------------------
     temp = (temp + 1) % 100
     humi = (humi + 1) % 100
     light_intensity += 1
