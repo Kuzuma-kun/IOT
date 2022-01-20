@@ -83,7 +83,7 @@ string = '''
     para.innerHTML = "";
     para.id = "location";
     document.body.appendChild(para);
-   function getLocation(callback) {
+   function getLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.watchPosition(function(position) {
                 var myjson = {"latitude":position.coords.latitude, "longitude":position.coords.longitude};
