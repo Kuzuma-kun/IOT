@@ -5,7 +5,6 @@ import json
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 
 BROKER_ADDRESS = "demo.thingsboard.io"
@@ -75,6 +74,10 @@ driver.get('https://www.google.com')
 # thuc te thi cac ham o day deu la ham async, nen ta khong the tra ve 1 gia tri nao ca
 # kieu, khi goi ham async, thay vi cho async lam xong thi code di toi dong tiep theo luon
 # con ham async chay trong background, khi nao no xong thi no goi ham callback
+# navigator.geolocation.watchPosition() dung de lien tuc cap nhat vi tri cua nguoi dung 1 cach tu dong.
+# chi can goi no 1 lan, no se lien tuc chay va cap nhat sau 1 khoang thoi gian nao do.
+# moi khi no chay thanh cong, no se goi ham callback va thuc hien moi dong code trong ham callback do.
+
 string = '''
     const para = document.createElement("p");
     para.innerHTML = "";
@@ -99,11 +102,19 @@ string = '''
 
 # repeat this code
 try:
+    # o day, minh chi execute doan javascript tren 1 lan, chu yeu de goi ham watchPosition 1 lan va de no tu chay
+    # moi lan watchPosition chay xong, no se goi ham callback va ghi vao phan tu <p id="location"> doan Json
+    # chua thong tin cua longitude va latitude.
     driver.execute_script(string)
+    # cho 2s de doan script chay xong.
     time.sleep(2)
+    # tim phan tu <p id="location"> de lay thong tin Json cua no.
     res = driver.find_element(By.ID, "location")
+    # res la 1 webElement. lay noi dung cua no thi res.text
     loc = res.text
+    # bien noi dung JSON dang string thanh dictionary.
     locDict = json.loads(loc)
+    # lay thong tin tu locDict (type dictionary)
     longitude = locDict["longitude"]
     latitude = locDict["latitude"]
     print("latitude: %f, longitude: %f" % (locDict["latitude"], locDict["longitude"]))
