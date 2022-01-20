@@ -76,27 +76,26 @@ driver.get('https://www.google.com')
 # kieu, khi goi ham async, thay vi cho async lam xong thi code di toi dong tiep theo luon
 # con ham async chay trong background, khi nao no xong thi no goi ham callback
 string = '''
+    const para = document.createElement("p");
+    para.innerHTML = "";
+    para.id = "location";
+    document.body.appendChild(para);
    function getLocation(callback) {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
+            navigator.geolocation.watchPosition(function(position) {
                 var myjson = {"latitude":position.coords.latitude, "longitude":position.coords.longitude};
                 console.log(position);
                 console.log(position.coords.latitude);
                 console.log(position.coords.longitude); 
                 var stringJson = JSON.stringify(myjson);
-                callback(stringJson);
+                console.log(stringJson);
+                document.getElementById("location").innerHTML = stringJson;
             });
         } else {
             console.log("Geolocation is not supported by this browser.");
         }
     }
-
-    getLocation(function(callback) {
-        const para = document.createElement("p");
-        para.innerHTML = callback;
-        para.id = "location";
-        document.body.appendChild(para);
-    });'''.replace('\n', '').replace('\t', '')
+    getLocation();'''.replace('\n', '').replace('\t', '')
 
 # repeat this code
 try:
@@ -118,8 +117,8 @@ while True:
                     'longitude': longitude, 'latitude': latitude}  # thang nay la dict
     # repeat code
     try:
-        driver.execute_script(string)
-        time.sleep(2)
+        # driver.execute_script(string)
+        # time.sleep(2)
         res = driver.find_element(By.ID, "location")
         loc = res.text
         locDict = json.loads(loc)
@@ -133,4 +132,4 @@ while True:
     humi = (humi + 1) % 100
     light_intensity += 1
     client.publish('v1/devices/me/telemetry', json.dumps(collect_data), 1)
-    time.sleep(8)
+    time.sleep(10)

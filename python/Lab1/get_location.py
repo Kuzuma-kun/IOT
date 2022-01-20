@@ -36,7 +36,6 @@ def getLoc():
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 import json
 import time
@@ -44,7 +43,6 @@ import time
 s = Service(ChromeDriverManager().install())
 driver = webdriver.Chrome(service=s)
 driver.get('https://www.google.com')
-options = Options()
 # dong code duoi day dung de tao them 1 p co id = "location" chen vao trang web
 # thuc te thi cac ham o day deu la ham async, nen ta khong the tra ve 1 gia tri nao ca
 # kieu, khi goi ham async, thay vi cho async lam xong thi code di toi dong tiep theo luon
@@ -58,20 +56,18 @@ string = '''
                 console.log(position.coords.latitude);
                 console.log(position.coords.longitude); 
                 var stringJson = JSON.stringify(myjson);
-                callback(stringJson);
+                console.log(stringJson);
+                const para = document.createElement("p");
+                para.innerHTML = stringJson;
+                para.id = "location";
+                document.body.appendChild(para);
             });
         } else {
             console.log("Geolocation is not supported by this browser.");
         }
     }
-    
-    getLocation(function(callback) {
-        console.log(callback);
-        const para = document.createElement("p");
-        para.innerHTML = callback;
-        para.id = "location";
-        document.body.appendChild(para);
-    });'''.replace('\n', '').replace('\t', '')
+    getLocation();'''.replace('\n', '').replace('\t', '')
+
 
 # repeat this code
 try:
